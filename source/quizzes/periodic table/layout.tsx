@@ -1,12 +1,19 @@
 import { DefaultFeedbackRenderer, TrainingHistoryPanel } from "../../defaultQuizLayout"
 import { QuizLayoutProps } from "../../quiz"
+import { TextRenderer } from "../../renderers/TextRenderer"
+import { AutofillEnumFetcher } from "../../response fetchers/autofill enum fetcher"
 import { PeriodicTable } from "./answer key"
 
+const possibleResponses = new Set(
+	Array.from(PeriodicTable.answerKey.values(), element => element.name)
+)
 
-export function PeriodicTableQuizLayout(props: QuizLayoutProps<number, PeriodicTable.Element, number>) {
+export function PeriodicTableQuizLayout(
+	props: QuizLayoutProps<number, PeriodicTable.Element, string, string>
+) {
 	return (
 		<>
-			<TrainingHistoryPanel trainingHistory={props.trainingHistory} />
+			{/* <TrainingHistoryPanel trainingHistory={props.trainingSessionHistory} /> */}
 
 			<article
 				style={{
@@ -15,21 +22,24 @@ export function PeriodicTableQuizLayout(props: QuizLayoutProps<number, PeriodicT
 					'align-items': "center",
 				}}
 			>
-				<DefaultFeedbackRenderer<number> feedback={props.feedbackRenderer} />
+				<DefaultFeedbackRenderer<string> feedback={props.feedback} />
 
 				<div>
-					<props.renderer question={props.question} />
+					<TextRenderer
+						question={props.question.toString()}
+						prompt="Which element has atomic number:"
+					/>
 				</div>
 
 				<div style={{ margin: "1em" }}>
-					<props.response_fetcher
-						answer={props.answer}
-						question={props.question}
-						quiz={props.answerKey}
-						trainingHistory={props.trainingHistory}
-						feedback={props.feedbackRenderer}
-						setResponse={props.setResponse}
-					/>
+					<AutofillEnumFetcher<number, PeriodicTable.Element, string>
+					answer={props.answer}
+					answerKey={props.answerKey}
+					question={props.question}
+					setResponse={props.setResponse}
+					trainingSessionHistory={props.trainingSessionHistory}
+					possibleResponses={possibleResponses}
+				/>
 				</div>
 			</article>
 		</>

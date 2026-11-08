@@ -1,8 +1,10 @@
+import { AnswerKey } from "../../quiz"
+
 /**
  * U.S. state capitals. Schema:
  * (state: string) : (capital: string)
  */
-export const US_state_capitals: Map<string, string> = new Map([
+export const US_state_capitals = new AnswerKey([
   ["Alabama", "Montgomery"],
   ["Alaska", "Juneau"],
   ["Arizona", "Phoenix"],

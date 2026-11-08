@@ -1,22 +1,18 @@
 import { SmartTrainer } from "../training algorithms/SmartTrainer"
 import { BaseTrainingAlgorithm } from "../training algorithms/BaseTrainingAlgorithm"
 import {
-  state_capital_text_renderer,
   music_notation_renderer,
   empty_renderer,
 } from "../renderers/Renderers.barrel"
 import {
-  compare_music_notation,
-  compare_strings
+  compare_music_notation
 } from "../evaluators/evaluators"
 import {
   music_notation,
-  US_state_capitals,
   empty
 } from "./answer keys.barrel"
 import {
   MusicalKeyboard,
-  EnumFetcher,
 } from "../response fetchers/user input fetchers.barrel"
 import { hiragana } from "./japanese/hiragana/quiz"
 import { katakana } from "./japanese/katakana/quiz"
@@ -24,6 +20,7 @@ import { IQuizBuilder, QuizBuilder } from "../quiz"
 import { hebrew } from "./hebrew/quiz"
 import { periodic_table } from "./periodic table/quiz"
 import { country_flags } from "./country flags/quiz"
+import { us_state_capitals } from "./US state capitals/quiz"
 import { kanji as kanji_recognition } from "./japanese/kanji/recognition/quiz"
 import { japaneseToEnglishVocabulary, englishToJapaneseVocabulary } from "./japanese/vocabulary/quiz"
 import { daysOfWeekJPtoEN, daysOfWeekENtoJP } from "./japanese/days of week/quiz"
@@ -33,7 +30,7 @@ import { portsToProtocolsQuiz, protocolsToPortsQuiz } from "./ports and protocol
 
 
 export const quizzes: IQuizBuilder<any, any, any, any>[] = [
-  // country_flags,
+  country_flags,
   // new QuizBuilder({
   //   title: "Music notation",
   //   quiz: music_notation,
@@ -43,28 +40,20 @@ export const quizzes: IQuizBuilder<any, any, any, any>[] = [
   //   renderer: music_notation_renderer,
   //   trainingAlgorithm: SmartTrainer,
   // }),
-  // new QuizBuilder({
-  //   title: "U.S. state capitals",
-  //   quiz: US_state_capitals,
-  //   evaluator: compare_strings,
-  //   response_fetcher: (props) => <EnumFetcher<string, string, string> {...props} sort />,
-  //   onResponse: defaultOnResponse,
-  //   renderer: state_capital_text_renderer,
-  //   trainingAlgorithm: SmartTrainer,
-  // }),
-  hiragana,
-  katakana,
-  // kanji_recognition,
-  // // kanji_writing,
-  japaneseToEnglishVocabulary,
-  englishToJapaneseVocabulary,
-  daysOfWeekJPtoEN,
-  daysOfWeekENtoJP,
-  comptiaSecurityPlusAcronyms,
+  us_state_capitals,
+  // hiragana,
+  // katakana,
+  // // kanji_recognition,
+  // // // kanji_writing,
+  // japaneseToEnglishVocabulary,
+  // englishToJapaneseVocabulary,
+  // daysOfWeekJPtoEN,
+  // daysOfWeekENtoJP,
+  // comptiaSecurityPlusAcronyms,
   protocolsToPortsQuiz,
   portsToProtocolsQuiz,
   // hebrew,
-  // periodic_table,
+  periodic_table,
   // empty_quiz = new QuizBuilder({
   //   title: 'Empty',
   //   answer_key: empty,

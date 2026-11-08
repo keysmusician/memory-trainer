@@ -5,8 +5,9 @@ import { TimedValue } from "../evaluators/evaluators"
 
 interface AutofillEnumFetcherProps<
 	QuestionType = unknown,
-	AnswerType = unknown
-> extends ResponseFetcherProps<QuestionType, AnswerType, string | TimedValue<string>> {
+	AnswerType = string | TimedValue<string>,
+	ResponseType = string | TimedValue<string>
+> extends ResponseFetcherProps<QuestionType, AnswerType, ResponseType> {
 	placeholder?: string
 	/**
 	 * A set of possible responses. If not provided, the fetcher will use the
@@ -20,19 +21,36 @@ interface AutofillEnumFetcherProps<
  **/
 export function AutofillEnumFetcher<
 	QuestionType = unknown,
-// AnswerType = string || TimedAnswer<string>,
+	AnswerType = string | TimedValue<string>,
+	ResponseType = string | TimedValue<string>
 >(
-	props: AutofillEnumFetcherProps<QuestionType, string | TimedValue<string>>
+	props: AutofillEnumFetcherProps<QuestionType, AnswerType, ResponseType>
 ) {
+	function answerToString(answer: AnswerType): string {
+		if (typeof answer === "string") {
+			return answer
+		}
+		if (
+			typeof answer === "object" &&
+			answer !== null &&
+			"value" in answer &&
+			typeof answer.value === "string"
+		) {
+			return answer.value
+		}
+		throw new TypeError("AutofillEnumFetcher requires string answers or possibleResponses.")
+	}
+
 	const answers = Array.from(
 		props.possibleResponses ??
 		new Set(
-			props.answerKey.values().map<string>( // TODO: Fix this coupling. This is a workaround for the fact that we don't know if the answer type will be a string.
-				(answer) => // We don't know if the answer type will be a string, but we want to force it to be.
-					'value' in (answer as any) ?
-						(answer as TimedValue<string>).value : // answer.value is a workaround for making this work for TimedAnswer types.
-						answer as string
-			)
+			// props.answerKey.values().map<string>( // TODO: Fix this coupling. This is a workaround for the fact that we don't know if the answer type will be a string.
+			// 	(answer) => // We don't know if the answer type will be a string, but we want to force it to be.
+			// 		'value' in (answer as any) ?
+			// 			(answer as TimedValue<string>).value : // answer.value is a workaround for making this work for TimedAnswer types.
+			// 			answer as string
+			// )
+			Array.from(props.answerKey.values(), answerToString)
 		)
 	)
 
@@ -74,14 +92,17 @@ export function AutofillEnumFetcher<
 		input_ref!.value = ""
 		input_ref!.focus()
 		setText("")
-		props.setResponse(() =>
-		// 'timeLimitSeconds' in (props.answer as TimedAnswer<string>) ? // WARNING: COUPLING
-		// { response: selection(), responseTimeSeconds: untrack(() => responseTimeSeconds()) } :
-		({
-			value: [selection()],
-			timeSeconds: untrack(() => responseTimeSeconds())
-		})
-		)
+		const answer = props.answer
+		const response =
+			typeof answer === "object" &&
+			answer !== null &&
+			"timeSeconds" in answer ? // WARNING: COUPLING
+				({
+					value: [selection()],
+					timeSeconds: untrack(() => responseTimeSeconds())
+				} as ResponseType) :
+				selection() as ResponseType
+		props.setResponse(() => response)
 		setStartTime(Date.now())
 		setSelection(options()[0])
 	}

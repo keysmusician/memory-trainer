@@ -16,7 +16,7 @@ const comparePortAndProtocol = (response: PortAndProtocols, answer: PortAndProto
 const portIncorrectOptionGenerator = new PortIncorrectOptionGenerator()
 
 export const protocolsToPortsQuiz = new QuizBuilder<string, PortAndProtocols, PortAndProtocols, string>({
-	title: 'protocols to ports',
+	title: 'Protocols to Ports',
 	answerKey: portsAndProtocols,
 	coordinator: new DefaultCoordinator({
 		evaluator: comparePortAndProtocol,
@@ -48,7 +48,7 @@ const portsToProtocolsAnswerKey = new AnswerKey<string, string>(
 )
 
 export const portsToProtocolsQuiz = new QuizBuilder<string, string, string, string>({
-	title: 'ports to protocols',
+	title: 'Ports to Protocols',
 	answerKey: portsToProtocolsAnswerKey,
 	coordinator: new DefaultCoordinator({
 		evaluator: (response, answer) => response === answer ? 1 : 0,

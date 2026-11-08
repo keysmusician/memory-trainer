@@ -72,10 +72,10 @@ function App() {
           <BackgroundImage />
 
           <Header>
-            <ProfileButton
+            {/* <ProfileButton
               student={student}
               setStudent={setStudent}
-            />
+            /> */}
           </Header>
 
           <section
